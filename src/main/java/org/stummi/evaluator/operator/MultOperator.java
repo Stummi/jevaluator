@@ -1,5 +1,8 @@
 package org.stummi.evaluator.operator;
 
+import org.stummi.evaluator.instruction.Instruction;
+import org.stummi.evaluator.instruction.MulInstruction;
+
 
 public class MultOperator extends AbstractBinaryOperator {
 
@@ -8,8 +11,9 @@ public class MultOperator extends AbstractBinaryOperator {
 	}
 
 	@Override
-	public Double applyBinary(Double left, Double right) {
-		return left * right;
+	public Instruction getBinaryInstruction() {
+		return new MulInstruction();
 	}
+
 
 }

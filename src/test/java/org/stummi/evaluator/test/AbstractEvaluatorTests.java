@@ -3,21 +3,20 @@ package org.stummi.evaluator.test;
 import java.util.Collections;
 import java.util.function.DoubleUnaryOperator;
 
+import lombok.RequiredArgsConstructor;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.stummi.evaluator.Evaluator;
 import org.stummi.evaluator.Expression;
-import org.stummi.evaluator.SimpleEvaluator;
 import org.stummi.evaluator.exception.EvaluatorException;
 
-public class EvaluatorTests {
+@RequiredArgsConstructor
+public abstract class AbstractEvaluatorTests {
 
-	private SimpleEvaluator evaluator;
+	private final Evaluator evaluator;
 
-	public EvaluatorTests() {
-		this.evaluator = new SimpleEvaluator();
-	}
-
-	@Test
+	//@Test
 	public void testSimpleConstantExpressions() throws EvaluatorException {
 		testStaticExpression("2", 2);
 		testStaticExpression("2+3", 2 + 3);
@@ -32,7 +31,7 @@ public class EvaluatorTests {
 		testStaticExpression("5 - - - 3", 5 - - -3);
 	}
 	
-	@Test
+	//@Test
 	public void testPrecedences() throws EvaluatorException {
 		testStaticExpression("2 * 3 + 4", 2 * 3 + 4);
 		testStaticExpression("2 + 3 * 4", 2 + 3 * 4);

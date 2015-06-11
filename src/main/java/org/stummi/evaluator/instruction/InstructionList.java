@@ -1,5 +1,6 @@
 package org.stummi.evaluator.instruction;
 
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Stack;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import org.objectweb.asm.MethodVisitor;
 import org.stummi.evaluator.EvaluationContext;
 import org.stummi.evaluator.Expression;
 
@@ -48,5 +50,15 @@ public class InstructionList implements Instruction, Expression {
 
 		return s.pop();
 
+	}
+
+	@Override
+	public void dump(PrintStream p) {
+		instructions.forEach(i -> i.dump(p));
+	}
+
+	@Override
+	public void visitMethod(MethodVisitor visitor) {
+		instructions.forEach(i -> i.visitMethod(visitor));
 	}
 }

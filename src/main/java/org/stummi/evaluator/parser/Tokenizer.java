@@ -4,8 +4,8 @@ import java.util.Stack;
 
 import org.stummi.evaluator.Token;
 import org.stummi.evaluator.exception.ExpressionSyntaxException;
-import org.stummi.evaluator.operand.Operand;
 import org.stummi.evaluator.operand.ConstantOperand;
+import org.stummi.evaluator.operand.Operand;
 import org.stummi.evaluator.operand.TokenList;
 import org.stummi.evaluator.operand.VariableOperand;
 import org.stummi.evaluator.operator.DivideOperator;
@@ -110,16 +110,23 @@ public class Tokenizer {
 
 	private Operand operandFromString(String token) throws ExpressionSyntaxException {
 		if(Character.isDigit(token.charAt(0)) || token.charAt(0) == '.') {
-			return new ConstantOperand(Double.parseDouble(token));
+			try {
+				return new ConstantOperand(Double.parseDouble(token));
+			} catch (NumberFormatException nfe) {
+				throw syntaxException("Not a valid number: " + token);
+			}
 		} else {
 			return new VariableOperand(token);
 		}
 	}
 
 	private void closeGroup() throws ExpressionSyntaxException {
-		Token t = tokenStack.pop();
+		TokenList t = tokenStack.pop();
 		if(tokenStack.isEmpty()) {
 			throw syntaxException("closing paranthesis without opening");
+		}
+		if(t.isEmpty()) {
+			throw syntaxException("empty tokenset");
 		}
 		tokenStack.peek().addToken(t);
 	}

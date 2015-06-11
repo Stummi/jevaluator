@@ -1,5 +1,7 @@
 package org.stummi.evaluator.exception;
 
+import java.io.PrintStream;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,5 +20,14 @@ public class ExpressionSyntaxException extends EvaluatorException {
 		super(message + " at " + position);
 		this.expression = expression;
 		this.position = position;
+	}
+
+	public void showPosition(PrintStream out) {
+		out.println(expression);
+		int l = position;
+		while(l-- > 0) {
+			out.print(" ");
+		}
+		out.println("^");
 	}
 }

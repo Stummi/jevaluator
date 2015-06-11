@@ -6,6 +6,7 @@ import java.util.List;
 import org.stummi.evaluator.Token;
 import org.stummi.evaluator.exception.ExpressionTreeException;
 import org.stummi.evaluator.instruction.Instruction;
+import org.stummi.evaluator.instruction.NOPInstruction;
 import org.stummi.evaluator.operator.Operator;
 
 /**
@@ -23,6 +24,10 @@ public class TokenList implements Operand {
 		this.tokens = new ArrayList<>();
 	}
 	
+	public boolean isEmpty() {
+		return tokens.isEmpty();
+	}
+	
 	public void addToken(Token t) {
 		tokens.add(t);
 	}
@@ -35,7 +40,7 @@ public class TokenList implements Operand {
 	@Override
 	public Instruction operandInstruction() throws ExpressionTreeException {
 		if(tokens.size() == 0) {
-			return (c) -> {};
+			return new NOPInstruction();
 		} else if(tokens.size() == 1) {
 			return ((Operand)tokens.get(0)).operandInstruction();
 		}

@@ -1,5 +1,8 @@
 package org.stummi.evaluator.operator;
 
+import org.stummi.evaluator.instruction.DivInstruction;
+import org.stummi.evaluator.instruction.Instruction;
+
 
 public class DivideOperator extends AbstractBinaryOperator {
 
@@ -8,8 +11,10 @@ public class DivideOperator extends AbstractBinaryOperator {
 	}
 
 	@Override
-	public Double applyBinary(Double left, Double right) {
-		return left / right;
+	public Instruction getBinaryInstruction() {
+		return new DivInstruction();
 	}
+
+	
 
 }

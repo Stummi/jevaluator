@@ -14,10 +14,15 @@ public class SimpleEvaluator implements Evaluator {
 
 	@Override
 	public Expression parseExpression(String expression) throws EvaluatorException {
-		TokenList list = new Tokenizer().tokenize(expression);
-		return flatList(list.operandInstruction());
+		TokenList tokens = new Tokenizer().tokenize(expression);
+		InstructionList list = flatList(tokens.operandInstruction());
+		return instructionListToExpression(list);
 	}
 	
+	protected Expression instructionListToExpression(InstructionList list) {
+		return list;
+	}
+
 	private static InstructionList flatList(Instruction i) {
 		List<Instruction> iList = new ArrayList<>();
 		flatList(i, iList);

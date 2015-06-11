@@ -1,5 +1,8 @@
 package org.stummi.evaluator.instruction;
 
+import java.io.PrintStream;
+
+import org.objectweb.asm.MethodVisitor;
 import org.stummi.evaluator.EvaluationContext;
 
 /**
@@ -8,4 +11,6 @@ import org.stummi.evaluator.EvaluationContext;
  */
 public interface Instruction {
 	void run(EvaluationContext context);
+	void dump(PrintStream p);
+	void visitMethod(MethodVisitor visitor);
 }

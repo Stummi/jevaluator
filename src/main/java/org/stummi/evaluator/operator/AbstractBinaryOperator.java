@@ -1,5 +1,7 @@
 package org.stummi.evaluator.operator;
 
+import org.stummi.evaluator.instruction.Instruction;
+
 
 public abstract class AbstractBinaryOperator extends AbstractOperator {
 
@@ -8,7 +10,7 @@ public abstract class AbstractBinaryOperator extends AbstractOperator {
 	}
 	
 	@Override
-	public Double applyUnary(Double right) {
+	public Instruction getUnaryInstruction() {
 		throw new UnsupportedOperationException(getClass().getSimpleName() + " cannot be applied unary");
 	}
 
