@@ -18,6 +18,7 @@ public class Tokenizer {
 	private Stack<TokenList> tokenStack = new Stack<>();
 	private StringBuilder currentToken = new StringBuilder();
 	private String currentExpression;
+	private int currentTokenStart;
 	private int currentPosition;
 
 	public Tokenizer() {
@@ -54,6 +55,11 @@ public class Tokenizer {
 			addOperator(c);
 			return;
 		}
+		
+		if(currentToken.length() == 0) {
+			currentTokenStart = currentPosition;
+		}
+		
 		currentToken.append(c);
 	}
 
@@ -94,6 +100,7 @@ public class Tokenizer {
 		
 		newToken(currentToken.toString());
 		currentToken = new StringBuilder();
+		currentTokenStart = currentPosition;
 	}
 
 	public void newToken(String token) throws ExpressionSyntaxException {
@@ -132,7 +139,7 @@ public class Tokenizer {
 	}
 
 	private ExpressionSyntaxException syntaxException(String message) {
-		return new ExpressionSyntaxException(currentExpression, currentPosition, message);
+		return new ExpressionSyntaxException(currentExpression, currentTokenStart, currentPosition, message);
 	}
 
 	private void openGroup() {
