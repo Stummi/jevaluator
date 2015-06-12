@@ -1,7 +1,5 @@
 package org.stummi.evaluator.asm;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.objectweb.asm.ClassWriter;
@@ -47,12 +45,6 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 		writer.visitEnd();
 
 		byte[] array = writer.toByteArray();
-		try(FileOutputStream fout = new FileOutputStream("/tmp/jit/"+name+".class")) {
-			fout.write(array);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return (Class<? extends Expression>) defineClass(name, array, 0, array.length);
 
 	}
