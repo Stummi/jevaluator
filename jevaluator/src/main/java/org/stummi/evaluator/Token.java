@@ -6,5 +6,5 @@ package org.stummi.evaluator;
  * Opening an
  */
 public interface Token {
-
+	default void afterTokenizing(Evaluator evaluator) {}
 }

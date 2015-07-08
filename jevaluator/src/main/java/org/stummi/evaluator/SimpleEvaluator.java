@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.stummi.evaluator.exception.EvaluatorException;
+import org.stummi.evaluator.function.FunctionRegistry;
 import org.stummi.evaluator.instruction.Instruction;
 import org.stummi.evaluator.instruction.InstructionList;
-import org.stummi.evaluator.operand.TokenList;
+import org.stummi.evaluator.operand.TokenGroup;
 import org.stummi.evaluator.parser.Tokenizer;
 
 public class SimpleEvaluator implements Evaluator {
+	private final FunctionRegistry functionRegistry = new FunctionRegistry();
 	public SimpleEvaluator() {}
 
 	@Override
 	public Expression parseExpression(String expression) throws EvaluatorException {
-		TokenList tokens = new Tokenizer().tokenize(expression);
+		TokenGroup tokens = new Tokenizer().tokenize(expression);
+		tokens.afterTokenizing(this);
 		InstructionList list = flatList(tokens.operandInstruction());
 		return instructionListToExpression(list);
 	}
@@ -37,6 +40,11 @@ public class SimpleEvaluator implements Evaluator {
 		} else {
 			iList.add(inst);
 		}
+	}
+
+	@Override
+	public FunctionRegistry getFunctionRegistry() {
+		return functionRegistry;
 	}
 	
 }
