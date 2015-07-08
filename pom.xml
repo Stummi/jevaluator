@@ -2,8 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.stummi.jevaluator</groupId>
-	<artifactId>jevaluator</artifactId>
+	<artifactId>jevaluator-parent</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -26,6 +27,10 @@
 		</plugins>
 	</build>
 
+    <modules>
+        <module>jevaluator</module>  
+    </modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -39,12 +44,6 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>${asm.version}</version>
 		</dependency>
 	</dependencies>
 </project>
