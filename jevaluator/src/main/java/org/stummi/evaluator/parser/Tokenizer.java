@@ -39,9 +39,13 @@ public class Tokenizer {
 			++currentPosition;
 		}
 		finishToken();
-
+		
 		if (tokenStack.size() == 1) {
-			return tokenStack.pop().getSingleGroup();
+			TokenList tokenList = tokenStack.pop();
+			if(tokenList.isEmpty()) {
+				throw syntaxException("empty expression");
+			}
+			return tokenList.getSingleGroup();
 		} else {
 			tokenStack.clear();
 			throw syntaxException("open group at end of expression");

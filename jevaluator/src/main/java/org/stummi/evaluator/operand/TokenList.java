@@ -63,5 +63,9 @@ public class TokenList implements Token {
 		return tokens;
 	}
 
+	public boolean isEmpty() {
+		return tokens.isEmpty();
+	}
+
 
 }
