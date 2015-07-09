@@ -6,7 +6,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.stummi.evaluator.Expression;
+import org.stummi.evaluator.expression.Expression;
 import org.stummi.evaluator.instruction.Instruction;
 import org.stummi.evaluator.instruction.InstructionList;
 
@@ -28,10 +28,22 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 		ASMParseContext parserContext = new ASMParseContext();
 		list.getInstructions().forEach(i -> i.prepareCompilation(parserContext));
 		
+		final String ifaceName;
+		switch (parserContext.getVariables().size()) {
+		case 0:
+			ifaceName = "StaticExpression";
+			break;
+		case 1:
+			ifaceName = "SingleVarExpression";
+			break;
+		default:
+			ifaceName = "Expression";
+			break;
+		}
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		// writer.visit
-		writer.visit(V1_5, ACC_PUBLIC, name, null, "java/lang/Object", new String[] { "org/stummi/evaluator/Expression" });
+		writer.visit(V1_5, ACC_PUBLIC, name, null, "java/lang/Object", new String[] { "org/stummi/evaluator/expression/"+ifaceName });
 		MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);

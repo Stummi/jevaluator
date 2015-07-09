@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.stummi.evaluator.Evaluator;
-import org.stummi.evaluator.Expression;
 import org.stummi.evaluator.exception.EvaluatorException;
+import org.stummi.evaluator.expression.Expression;
+import org.stummi.evaluator.expression.SingleVarExpression;
+import org.stummi.evaluator.expression.StaticExpression;
 import org.stummi.evaluator.function.JavaFunction;
 
 @RequiredArgsConstructor
@@ -78,8 +80,13 @@ public abstract class AbstractEvaluatorTests {
 
 	private void testExpressionWithX(String expression, DoubleUnaryOperator result) throws EvaluatorException {
 		Expression exp = evaluator.parseExpression(expression);
+		Assert.assertTrue("Expression should be an instance of an SingleVarExpression", exp instanceof SingleVarExpression);
+		SingleVarExpression svarExpr = (SingleVarExpression)exp;
+		
 		for (double x = 0; x < 100; x += 0.1) {
-			Assert.assertEquals(result.applyAsDouble(x), exp.run(Collections.singletonMap("x", x)), 1e-8);
+			double expect = result.applyAsDouble(x);
+			Assert.assertEquals(expect, svarExpr.run(Collections.singletonMap("x", x)), 1e-8);
+			Assert.assertEquals(expect, svarExpr.run(x), 1e-8);
 		}
 	}
 
@@ -96,6 +103,11 @@ public abstract class AbstractEvaluatorTests {
 	}
 
 	private void testStaticExpression(String expression, double result) throws EvaluatorException {
+		Expression exp = evaluator.parseExpression(expression);
+		Assert.assertTrue("Expression should be an instance of an StaticExpression", exp instanceof StaticExpression);
+		StaticExpression staticExp = (StaticExpression)exp;
+		Assert.assertEquals(result, staticExp.run(Collections.emptyMap()), 1e-8);
+		Assert.assertEquals(result, staticExp.run(), 1e-8);
 		Assert.assertEquals(result, evaluator.evaluate(expression), 1e-8);
 	}
 }

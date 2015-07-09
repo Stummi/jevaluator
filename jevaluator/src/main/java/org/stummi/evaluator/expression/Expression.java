@@ -1,4 +1,4 @@
-package org.stummi.evaluator;
+package org.stummi.evaluator.expression;
 
 import java.util.Map;
 

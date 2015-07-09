@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.objectweb.asm.MethodVisitor;
 import org.stummi.evaluator.EvaluationContext;
-import org.stummi.evaluator.Expression;
 import org.stummi.evaluator.asm.ASMParseContext;
+import org.stummi.evaluator.expression.Expression;
 
 /**
  * Class Containing serval Instructions, exposing an {@link Instruction}

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.stummi.evaluator.exception.EvaluatorException;
-import org.stummi.evaluator.function.FunctionRegistry;
+import org.stummi.evaluator.expression.Expression;
 
 /**
  * Interface for the actual Evaluator which is intented to be used by the User.
@@ -15,7 +15,7 @@ import org.stummi.evaluator.function.FunctionRegistry;
  * The implementation may or may not cache identical expressions for
  * performance, so please consult the implementations documentation as well
  */
-public interface Evaluator {
+public interface Evaluator extends EvaluatorContext {
 	/**
 	 * Compiles an String represented expression and returns the
 	 * {@link Expression} instance
@@ -27,8 +27,6 @@ public interface Evaluator {
 	 */
 	Expression parseExpression(String expression) throws EvaluatorException;
 
-	FunctionRegistry getFunctionRegistry();
-	
 	/**
 	 * Shortcut method which compiles and runs the expression with an empty environment
 	 */

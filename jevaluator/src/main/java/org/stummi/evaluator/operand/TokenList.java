@@ -3,7 +3,8 @@ package org.stummi.evaluator.operand;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.stummi.evaluator.Evaluator;
+import org.stummi.evaluator.EvaluatorContext;
+import org.stummi.evaluator.ExpressionContext;
 import org.stummi.evaluator.Token;
 import org.stummi.evaluator.exception.ExpressionTreeException;
 
@@ -50,8 +51,8 @@ public class TokenList implements Token {
 	}
 	
 	@Override
-	public void afterTokenizing(Evaluator evaluator) {
-		tokens.forEach(t -> t.afterTokenizing(evaluator));
+	public void afterTokenizing(EvaluatorContext evaluator, ExpressionContext expressionContext) {
+		tokens.forEach(t -> t.afterTokenizing(evaluator, expressionContext));
 	}
 
 	public int size() {

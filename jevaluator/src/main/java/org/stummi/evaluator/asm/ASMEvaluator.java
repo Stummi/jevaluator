@@ -1,7 +1,8 @@
 package org.stummi.evaluator.asm;
 
-import org.stummi.evaluator.Expression;
+import org.stummi.evaluator.ExpressionContext;
 import org.stummi.evaluator.SimpleEvaluator;
+import org.stummi.evaluator.expression.Expression;
 import org.stummi.evaluator.instruction.InstructionList;
 
 public class ASMEvaluator extends SimpleEvaluator {
@@ -17,7 +18,7 @@ public class ASMEvaluator extends SimpleEvaluator {
 	}
 
 	@Override
-	protected Expression instructionListToExpression(InstructionList list) {
+	protected Expression instructionListToExpression(InstructionList list, ExpressionContext context) {
 		try {
 			return loader.classFromInstructionList(list).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

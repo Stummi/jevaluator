@@ -35,5 +35,7 @@ public class PushVariableInstruction implements Instruction {
 			context.addVariable(varName);
 		}
 	}
+	
+	
 
 }

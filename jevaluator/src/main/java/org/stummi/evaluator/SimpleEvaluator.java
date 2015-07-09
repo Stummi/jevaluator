@@ -4,26 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.stummi.evaluator.exception.EvaluatorException;
-import org.stummi.evaluator.function.FunctionRegistry;
+import org.stummi.evaluator.expression.DelegatingSingleVarExpression;
+import org.stummi.evaluator.expression.DelegatingStaticExpression;
+import org.stummi.evaluator.expression.Expression;
 import org.stummi.evaluator.instruction.Instruction;
 import org.stummi.evaluator.instruction.InstructionList;
 import org.stummi.evaluator.operand.TokenGroup;
 import org.stummi.evaluator.parser.Tokenizer;
 
-public class SimpleEvaluator implements Evaluator {
-	private final FunctionRegistry functionRegistry = new FunctionRegistry();
+public class SimpleEvaluator extends DefaultEvaluatorContext implements Evaluator {
 	public SimpleEvaluator() {}
 
 	@Override
 	public Expression parseExpression(String expression) throws EvaluatorException {
+		ExpressionContext context = new DefaultExpressionContext();
 		TokenGroup tokens = new Tokenizer().tokenize(expression);
-		tokens.afterTokenizing(this);
+		tokens.afterTokenizing(this, context);
 		InstructionList list = flatList(tokens.operandInstruction());
-		return instructionListToExpression(list);
+		return instructionListToExpression(list, context);
 	}
 	
-	protected Expression instructionListToExpression(InstructionList list) {
-		return list;
+	protected Expression instructionListToExpression(InstructionList list, ExpressionContext context) {
+		switch(context.getVariables().size()) {
+		case 0:
+			return new DelegatingStaticExpression(list);
+		case 1:
+			return new DelegatingSingleVarExpression(list, context.getVariables().get(0));
+		default:
+			return list;
+		}
 	}
 
 	private static InstructionList flatList(Instruction i) {
@@ -42,9 +51,5 @@ public class SimpleEvaluator implements Evaluator {
 		}
 	}
 
-	@Override
-	public FunctionRegistry getFunctionRegistry() {
-		return functionRegistry;
-	}
 	
 }

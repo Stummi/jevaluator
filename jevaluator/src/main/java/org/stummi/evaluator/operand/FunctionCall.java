@@ -5,7 +5,8 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
-import org.stummi.evaluator.Evaluator;
+import org.stummi.evaluator.EvaluatorContext;
+import org.stummi.evaluator.ExpressionContext;
 import org.stummi.evaluator.exception.ExpressionTreeException;
 import org.stummi.evaluator.function.Function;
 import org.stummi.evaluator.instruction.FunctionCallInstruction;
@@ -33,10 +34,10 @@ public class FunctionCall implements Operand {
 	}
 
 	@Override
-	public void afterTokenizing(Evaluator evaluator) {
+	public void afterTokenizing(EvaluatorContext evaluator, ExpressionContext expressionContext) {
 		int argCount = arguments.size();
 		function = evaluator.getFunctionRegistry().getFunction(functionName, argCount);
 		
-		arguments.afterTokenizing(evaluator);
+		arguments.afterTokenizing(evaluator, expressionContext);
 	}
 }

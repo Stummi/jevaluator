@@ -3,6 +3,8 @@ package org.stummi.evaluator.operand;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import org.stummi.evaluator.EvaluatorContext;
+import org.stummi.evaluator.ExpressionContext;
 import org.stummi.evaluator.exception.ExpressionTreeException;
 import org.stummi.evaluator.instruction.Instruction;
 import org.stummi.evaluator.instruction.PushVariableInstruction;
@@ -20,5 +22,10 @@ public class VariableOperand implements Operand {
 	@Override
 	public Instruction operandInstruction() throws ExpressionTreeException {
 		return new PushVariableInstruction(variable);
+	}
+	
+	@Override
+	public void afterTokenizing(EvaluatorContext evaluator, ExpressionContext expressionContext) {
+		expressionContext.addVariable(variable);
 	}
 }
