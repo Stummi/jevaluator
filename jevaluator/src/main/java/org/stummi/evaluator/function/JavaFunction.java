@@ -8,8 +8,8 @@ import java.util.Stack;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.stummi.evaluator.EvaluationContext;
+import org.stummi.evaluator.asm.ASMParseContext;
 import org.stummi.evaluator.instruction.Instruction;
-
 
 public class JavaFunction implements Function, Instruction {
 	private final Method method;
@@ -102,7 +102,7 @@ public class JavaFunction implements Function, Instruction {
 	}
 
 	@Override
-	public void visitMethod(MethodVisitor visitor) {
+	public void visitMethod(ASMParseContext context, MethodVisitor visitor) {
 		String owner = method.getDeclaringClass().getCanonicalName().replace('.', '/');
 		StringBuilder signature = new StringBuilder("(");
 		if(isVariadic()) {
@@ -115,5 +115,8 @@ public class JavaFunction implements Function, Instruction {
 		signature.append(")D");
 		visitor.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, signature.toString(), false);
 	}
+
+	@Override
+	public void prepareCompilation(ASMParseContext context) {}
 
 }

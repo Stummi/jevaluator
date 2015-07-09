@@ -26,16 +26,19 @@ public class TokenList implements Token {
 		tokens.add(new TokenGroup());
 	}
 
+	public TokenGroup getOrCreateCurrentGroup() {
+		if(tokens.isEmpty()) {
+			tokens.add(new TokenGroup());
+		}
+		return getCurrentGroup();
+	}
+	
 	public TokenGroup getCurrentGroup() {
 		return tokens.get(tokens.size()-1);
 	}
 
-	public void addToken(Token t) throws ExpressionTreeException {
-		if(tokens.isEmpty()) {
-			newTokenGroup();
-		}
-		
-		getCurrentGroup().addToken(t);
+	public void addToken(Token t) {
+		getOrCreateCurrentGroup().addToken(t);
 	}
 
 	public Token getLastToken() {
@@ -58,4 +61,6 @@ public class TokenList implements Token {
 	public List<TokenGroup> getGroups() {
 		return tokens;
 	}
+
+
 }

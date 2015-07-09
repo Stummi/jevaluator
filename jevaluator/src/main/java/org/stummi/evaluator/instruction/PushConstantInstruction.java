@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.objectweb.asm.MethodVisitor;
 import org.stummi.evaluator.EvaluationContext;
+import org.stummi.evaluator.asm.ASMParseContext;
 
 @RequiredArgsConstructor
 public class PushConstantInstruction implements Instruction {
@@ -22,8 +23,11 @@ public class PushConstantInstruction implements Instruction {
 	}
 
 	@Override
-	public void visitMethod(MethodVisitor visitor) {
+	public void visitMethod(ASMParseContext context, MethodVisitor visitor) {
 		visitor.visitLdcInsn(val);
 	}
+
+	@Override
+	public void prepareCompilation(ASMParseContext context) {}
 
 }

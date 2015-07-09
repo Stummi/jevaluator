@@ -104,12 +104,8 @@ public class Tokenizer {
 		}
 	}
 
-	private void addToken(Token t) throws ExpressionSyntaxException {
-		try {
-			tokenStack.peek().addToken(t);
-		} catch (ExpressionTreeException ete) {
-			throw syntaxException(ete.getMessage());
-		}
+	private void addToken(Token t) {
+		tokenStack.peek().addToken(t);
 	}
 
 	private void finishToken() throws ExpressionSyntaxException {
@@ -131,12 +127,7 @@ public class Tokenizer {
 	}
 
 	private void addString(String token) throws ExpressionSyntaxException {
-		try {
 			tokenStack.peek().addToken(operandFromString(token));
-		} catch (ExpressionTreeException ete) {
-			throw syntaxException(ete.getMessage());
-		}
-
 	}
 
 	private Operand operandFromString(String token)
@@ -158,8 +149,8 @@ public class Tokenizer {
 			throw syntaxException("closing paranthesis without opening");
 		}
 
-		TokenGroup lastGroup = tokenStack.peek().getCurrentGroup();
-		Token lastToken = lastGroup.getLastToken();
+		TokenGroup lastGroup = tokenStack.peek().getOrCreateCurrentGroup();
+		Token lastToken = lastGroup.isEmpty() ? null : lastGroup.getLastToken();
 		
 		if (lastToken instanceof VariableOperand) {
 			lastGroup.removeLastToken();

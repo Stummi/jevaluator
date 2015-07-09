@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import lombok.RequiredArgsConstructor;
 
 import org.objectweb.asm.MethodVisitor;
+import org.stummi.evaluator.asm.ASMParseContext;
 
 @RequiredArgsConstructor
 public abstract class AbstractOperatorInstruction implements Instruction {
@@ -18,8 +19,11 @@ public abstract class AbstractOperatorInstruction implements Instruction {
 	}
 	
 	@Override
-	public void visitMethod(MethodVisitor visitor) {
+	public void visitMethod(ASMParseContext context, MethodVisitor visitor) {
 		visitor.visitInsn(opcode);
 	}
+	
+	@Override
+	public void prepareCompilation(ASMParseContext context) {}
 	
 }

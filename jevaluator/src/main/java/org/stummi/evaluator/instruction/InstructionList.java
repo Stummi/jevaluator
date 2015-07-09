@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.objectweb.asm.MethodVisitor;
 import org.stummi.evaluator.EvaluationContext;
 import org.stummi.evaluator.Expression;
+import org.stummi.evaluator.asm.ASMParseContext;
 
 /**
  * Class Containing serval Instructions, exposing an {@link Instruction}
@@ -58,7 +59,12 @@ public class InstructionList implements Instruction, Expression {
 	}
 
 	@Override
-	public void visitMethod(MethodVisitor visitor) {
-		instructions.forEach(i -> i.visitMethod(visitor));
+	public void visitMethod(ASMParseContext context, MethodVisitor visitor) {
+		instructions.forEach(i -> i.visitMethod(context, visitor));
+	}
+
+	@Override
+	public void prepareCompilation(ASMParseContext context) {
+		instructions.forEach(i -> i.prepareCompilation(context));	
 	}
 }

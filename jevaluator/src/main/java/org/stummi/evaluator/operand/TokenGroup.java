@@ -46,7 +46,8 @@ public class TokenGroup implements Operand {
 			return ((Operand)tokens.get(0)).operandInstruction();
 		}
 		
-		return toTokenTree().operandInstruction();
+		TokenTree tree = toTokenTree();
+		return tree.operandInstruction();
 	}
 
 	public TokenTree toTokenTree() throws ExpressionTreeException {
@@ -67,7 +68,12 @@ public class TokenGroup implements Operand {
 				continue;
 			}
 			
-			if(t instanceof Operator && tokens.get(idx + 1) instanceof Operand) {
+			if(t instanceof Operator) {
+				if(!(tokens.get(idx + 1) instanceof Operand)) {
+					hasLeftOperand = false;
+					continue;
+				}
+			
 				Operator op = (Operator)t;
 				int precedence;
 				

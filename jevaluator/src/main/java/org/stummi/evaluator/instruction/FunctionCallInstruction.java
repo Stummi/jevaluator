@@ -6,6 +6,7 @@ import java.util.List;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.stummi.evaluator.EvaluationContext;
+import org.stummi.evaluator.asm.ASMParseContext;
 import org.stummi.evaluator.function.Function;
 
 public class FunctionCallInstruction implements Instruction {
@@ -44,29 +45,34 @@ public class FunctionCallInstruction implements Instruction {
 	}
 
 	@Override
-	public void visitMethod(MethodVisitor visitor) {
+	public void visitMethod(ASMParseContext context, MethodVisitor visitor) {
 		if(variadic) {
-			addVariadicArguments(visitor);
+			addVariadicArguments(context, visitor);
 		} else {
-			addNonVariadicArguments(visitor);
+			addNonVariadicArguments(context, visitor);
 		}
-		instruction.visitMethod(visitor);
+		instruction.visitMethod(context, visitor);
 	}
 
-	private void addNonVariadicArguments(MethodVisitor visitor) {
-		arguments.forEach(i -> i.visitMethod(visitor));
+	private void addNonVariadicArguments(ASMParseContext context, MethodVisitor visitor) {
+		arguments.forEach(i -> i.visitMethod(context, visitor));
 	}
 
-	private void addVariadicArguments(MethodVisitor visitor) {
+	private void addVariadicArguments(ASMParseContext context, MethodVisitor visitor) {
 		visitor.visitLdcInsn(arguments.size());
 		visitor.visitIntInsn(Opcodes.NEWARRAY, Opcodes.T_DOUBLE);
 		
 		for(int idx=0; idx<arguments.size(); ++idx) {
 			visitor.visitInsn(Opcodes.DUP);
 			visitor.visitLdcInsn(idx);
-			arguments.get(idx).visitMethod(visitor);
+			arguments.get(idx).visitMethod(context, visitor);
 			visitor.visitInsn(Opcodes.DASTORE);
 		}
+	}
+
+	@Override
+	public void prepareCompilation(ASMParseContext context) {
+		arguments.forEach(i -> i.prepareCompilation(context));
 	}
 
 }
