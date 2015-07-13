@@ -1,13 +1,11 @@
 package org.stummi.evaluator.tools;
 
-import java.util.Collections;
-
 import org.stummi.evaluator.Evaluator;
 import org.stummi.evaluator.SimpleEvaluator;
 import org.stummi.evaluator.asm.ASMEvaluator;
 import org.stummi.evaluator.exception.EvaluatorException;
 import org.stummi.evaluator.exception.ExpressionSyntaxException;
-import org.stummi.evaluator.expression.Expression;
+import org.stummi.evaluator.expression.SingleVarExpression;
 
 public class ExpressionRunner {
 	public static void main(String[] args) throws EvaluatorException {
@@ -28,9 +26,9 @@ public class ExpressionRunner {
 		String exprStr = args[1];
 		
 		long t1 = System.currentTimeMillis();
-		Expression expr;
+		SingleVarExpression expr;
 		try {
-			expr = eval.parseExpression(exprStr);
+			expr = (SingleVarExpression) eval.parseExpression(exprStr);
 		} catch (ExpressionSyntaxException ese) {
 			System.err.println(ese.getMessage());
 			ese.showPosition(System.err);
@@ -59,7 +57,7 @@ public class ExpressionRunner {
 		for(int idx=0; idx<count; ++idx){
 			double x = xfrom + xstep*idx;
 			input[idx] = x;
-			result[idx] = expr.run(Collections.singletonMap("x", x));
+			result[idx] = expr.run(x);
 		}
 		t2 = System.currentTimeMillis();
 		
