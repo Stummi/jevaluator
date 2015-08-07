@@ -47,4 +47,8 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+    <scm>
+        <connection>scm:git:git@git:mst/jevaluator.git</connection>
+    </scm>
 </project>
