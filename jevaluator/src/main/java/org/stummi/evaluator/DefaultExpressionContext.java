@@ -11,7 +11,9 @@ public class DefaultExpressionContext implements ExpressionContext {
 
 	@Override
 	public void addVariable(String variable) {
-		variables.add(variable);
+		if(!variables.contains(variable)) {
+			variables.add(variable);
+		}
 		
 	}
 

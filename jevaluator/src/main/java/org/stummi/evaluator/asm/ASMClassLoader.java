@@ -1,5 +1,6 @@
 package org.stummi.evaluator.asm;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.objectweb.asm.ClassWriter;
@@ -18,7 +19,7 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Class<? extends Expression> classFromInstructionList(InstructionList list) {
+	public Class<? extends Expression> createExpressionClass(InstructionList list) {
 		String name = "JITExpression$" + counter.incrementAndGet();
 		byte[] data = compileInstructionList(list, name);
 		return (Class<? extends Expression>) defineClass(name, data, 0, data.length);
@@ -42,25 +43,27 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 		}
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-		// writer.visit
+		
+		// write class header
 		writer.visit(V1_5, ACC_PUBLIC, name, null, "java/lang/Object", new String[] { "org/stummi/evaluator/expression/"+ifaceName });
+		
+		// Write Constructor
 		MethodVisitor mv = writer.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 		mv.visitInsn(RETURN);
-
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		
 		
+		// write internal run method
 		StringBuilder sb = new StringBuilder("(");
 		for(int idx=0; idx<parserContext.getVariables().size(); ++idx) {
 			sb.append("D");
 		}
 		sb.append(")D");
 		mv = writer.visitMethod(ACC_PUBLIC, "run", sb.toString(), null, null);
-
 
 		Label start = new Label();
 		Label stop = new Label();
@@ -76,11 +79,12 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 			slot += 2;
 		}
 
-		
 		mv.visitInsn(DRETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
-	
+		
+		
+		// write Expression interface run method
 		mv = writer.visitMethod(ACC_PUBLIC, "run", "(Ljava/util/Map;)Ljava/lang/Double;",
 				"(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Double;>;)Ljava/lang/Double;", null);
 		mv.visitCode();
@@ -99,6 +103,26 @@ public class ASMClassLoader extends ClassLoader implements Opcodes {
 		mv.visitInsn(ARETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
+		
+		
+		// write Expression interface getVariables method
+		List<String> variables = parserContext.getVariables();
+		mv = writer.visitMethod(ACC_PUBLIC, "getRequiredVariables", "()Ljava/util/List;", "()Ljava/util/List<Ljava/langString;>;", null);
+		mv.visitLdcInsn(variables.size());
+		mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
+		
+		for(int idx=0; idx<variables.size(); ++idx) {
+			mv.visitInsn(DUP);
+			mv.visitLdcInsn(idx);
+			mv.visitLdcInsn(variables.get(idx));
+			mv.visitInsn(AASTORE);
+		}
+		
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/Arrays", "asList", "([Ljava/lang/Object;)Ljava/util/List;", false);
+		mv.visitInsn(ARETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		
 		writer.visitEnd();
 
 		return writer.toByteArray();

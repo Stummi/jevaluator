@@ -1,12 +1,14 @@
 package org.stummi.evaluator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.stummi.evaluator.exception.EvaluatorException;
 import org.stummi.evaluator.expression.DelegatingSingleVarExpression;
 import org.stummi.evaluator.expression.DelegatingStaticExpression;
 import org.stummi.evaluator.expression.Expression;
+import org.stummi.evaluator.expression.InstructionListExpression;
 import org.stummi.evaluator.instruction.Instruction;
 import org.stummi.evaluator.instruction.InstructionList;
 import org.stummi.evaluator.operand.TokenGroup;
@@ -25,13 +27,14 @@ public class SimpleEvaluator extends DefaultEvaluatorContext implements Evaluato
 	}
 	
 	protected Expression instructionListToExpression(InstructionList list, ExpressionContext context) {
+		Expression expr = new InstructionListExpression(list, Collections.unmodifiableList(context.getVariables()));
 		switch(context.getVariables().size()) {
 		case 0:
-			return new DelegatingStaticExpression(list);
+			return new DelegatingStaticExpression(expr);
 		case 1:
-			return new DelegatingSingleVarExpression(list, context.getVariables().get(0));
+			return new DelegatingSingleVarExpression(expr, context.getVariables().get(0));
 		default:
-			return list;
+			return expr;
 		}
 	}
 

@@ -6,8 +6,10 @@ import static java.lang.Math.min;
 import static java.lang.Math.sin;
 import static java.lang.Math.tan;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
@@ -77,6 +79,23 @@ public abstract class AbstractEvaluatorTests {
 		testExpressionWithXY("sin(x+cos(y))+tan(y*y)", (x, y) -> sin(x + cos(y)) + tan(y * y));
 		testExpressionWithXY("max(x,y) + min(cos(x), sin(y))", (x, y) -> max(x, y) + min(cos(x), sin(y)));
 	}
+	
+	@Test 
+	public void testRequiredVariables() throws EvaluatorException {
+		assertRequiredVariables("2 + 2");
+		assertRequiredVariables("2 + x", "x");
+		assertRequiredVariables("x + y", "x", "y");
+		assertRequiredVariables("x * x + y", "x", "y");
+		assertRequiredVariables("y + x * x", "y", "x");
+	}
+
+	private void assertRequiredVariables(String expression, String... args) throws EvaluatorException {
+		Expression exp = evaluator.parseExpression(expression);
+		List<String> requiredVars = exp.getRequiredVariables();
+		Assert.assertEquals("Number of found variables does not Match expected", args.length, requiredVars.size());
+		Assert.assertEquals(Arrays.asList(args), requiredVars);
+		
+	}
 
 	private void testExpressionWithX(String expression, DoubleUnaryOperator result) throws EvaluatorException {
 		Expression exp = evaluator.parseExpression(expression);
@@ -110,4 +129,7 @@ public abstract class AbstractEvaluatorTests {
 		Assert.assertEquals(result, staticExp.run(), 1e-8);
 		Assert.assertEquals(result, evaluator.evaluate(expression), 1e-8);
 	}
+	
+	
 }
+

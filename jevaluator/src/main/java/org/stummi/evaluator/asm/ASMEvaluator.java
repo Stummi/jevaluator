@@ -20,7 +20,7 @@ public class ASMEvaluator extends SimpleEvaluator {
 	@Override
 	protected Expression instructionListToExpression(InstructionList list, ExpressionContext context) {
 		try {
-			return loader.classFromInstructionList(list).newInstance();
+			return loader.createExpressionClass(list).newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;

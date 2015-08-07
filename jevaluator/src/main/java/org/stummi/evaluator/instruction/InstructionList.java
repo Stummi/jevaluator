@@ -3,8 +3,6 @@ package org.stummi.evaluator.instruction;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +21,12 @@ import org.stummi.evaluator.expression.Expression;
  *
  */
 @RequiredArgsConstructor
-public class InstructionList implements Instruction, Expression {
+public class InstructionList implements Instruction {
 
 	@Getter
 	private final List<Instruction> instructions;
 
+	
 	public InstructionList(Instruction... instructions) {
 		this.instructions = Arrays.asList(instructions);
 	}
@@ -37,20 +36,6 @@ public class InstructionList implements Instruction, Expression {
 		for (Instruction i : instructions) {
 			i.run(context);
 		}
-	}
-
-	@Override
-	public Double run(Map<String, Double> environment) {
-		EvaluationContext context = new EvaluationContext(environment);
-		run(context);
-		Stack<Double> s = context.getStack();
-
-		if (s.size() != 1) {
-			throw new IllegalStateException("Expected a stack size from 1 at end but got " + s.size());
-		}
-
-		return s.pop();
-
 	}
 
 	@Override
@@ -67,4 +52,5 @@ public class InstructionList implements Instruction, Expression {
 	public void prepareCompilation(ASMParseContext context) {
 		instructions.forEach(i -> i.prepareCompilation(context));	
 	}
+
 }

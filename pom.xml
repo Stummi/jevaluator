@@ -29,7 +29,7 @@
 
     <modules>
         <module>jevaluator</module>  
-		<module>jevaluator-tool</module>
+        <module>jevaluator-tools</module>
     </modules>
 
 	<dependencies>
