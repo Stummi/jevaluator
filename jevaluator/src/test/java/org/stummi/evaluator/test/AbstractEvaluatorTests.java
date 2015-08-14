@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
+import java.util.stream.DoubleStream;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,20 +68,31 @@ public abstract class AbstractEvaluatorTests {
 
 	}
 
+	public static double average(double... values) {
+		return DoubleStream.of(values).average().orElse(Double.NaN);
+	}
+
+	public static double negate(double value) {
+		return -value;
+	}
+
 	@Test
 	public void testFunction() throws EvaluatorException, ReflectiveOperationException {
-		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(StrictMath.class, "sin", 1));
-		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(StrictMath.class, "cos", 1));
-		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(StrictMath.class, "tan", 1));
+		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(Math.class, "sin", 1));
+		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(Math.class, "cos", 1));
+		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(Math.class, "tan", 1));
 		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(Math.class, "max", 2));
 		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(Math.class, "min", 2));
+		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(AbstractEvaluatorTests.class, "average", -1));
+		evaluator.getFunctionRegistry().registerFunction(new JavaFunction(AbstractEvaluatorTests.class, "negate", 1, "mynegate"));
 
 		testExpressionWithX("sin(x)", x -> Math.sin(x));
 		testExpressionWithXY("sin(x+cos(y))+tan(y*y)", (x, y) -> sin(x + cos(y)) + tan(y * y));
 		testExpressionWithXY("max(x,y) + min(cos(x), sin(y))", (x, y) -> max(x, y) + min(cos(x), sin(y)));
+		testExpressionWithXY("average(x,y,x) + mynegate(x)", (x, y) -> average(x, y, x) + negate(x));
 	}
-	
-	@Test 
+
+	@Test
 	public void testRequiredVariables() throws EvaluatorException {
 		assertRequiredVariables("2 + 2");
 		assertRequiredVariables("2 + x", "x");
@@ -94,14 +106,14 @@ public abstract class AbstractEvaluatorTests {
 		List<String> requiredVars = exp.getRequiredVariables();
 		Assert.assertEquals("Number of found variables does not Match expected", args.length, requiredVars.size());
 		Assert.assertEquals(Arrays.asList(args), requiredVars);
-		
+
 	}
 
 	private void testExpressionWithX(String expression, DoubleUnaryOperator result) throws EvaluatorException {
 		Expression exp = evaluator.parseExpression(expression);
 		Assert.assertTrue("Expression should be an instance of an SingleVarExpression", exp instanceof SingleVarExpression);
-		SingleVarExpression svarExpr = (SingleVarExpression)exp;
-		
+		SingleVarExpression svarExpr = (SingleVarExpression) exp;
+
 		for (double x = 0; x < 100; x += 0.1) {
 			double expect = result.applyAsDouble(x);
 			Assert.assertEquals(expect, svarExpr.run(Collections.singletonMap("x", x)), 1e-8);
@@ -124,12 +136,10 @@ public abstract class AbstractEvaluatorTests {
 	private void testStaticExpression(String expression, double result) throws EvaluatorException {
 		Expression exp = evaluator.parseExpression(expression);
 		Assert.assertTrue("Expression should be an instance of an StaticExpression", exp instanceof StaticExpression);
-		StaticExpression staticExp = (StaticExpression)exp;
+		StaticExpression staticExp = (StaticExpression) exp;
 		Assert.assertEquals(result, staticExp.run(Collections.emptyMap()), 1e-8);
 		Assert.assertEquals(result, staticExp.run(), 1e-8);
 		Assert.assertEquals(result, evaluator.evaluate(expression), 1e-8);
 	}
-	
-	
-}
 
+}

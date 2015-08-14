@@ -16,8 +16,33 @@ public class JavaFunction implements Function, Instruction {
 	private final String name;
 	private final int argumentCount;
 
-	public JavaFunction(Class<?> container, String methodName, int argumentCount) throws ReflectiveOperationException {
+	public JavaFunction(Method method) {
+		this(method, method.getName());
+	}
+	
+	public JavaFunction(Method method, String localName) {
+		this.method = method;
+		this.name = localName;
 		
+		Class<?>[] paramTypes = method.getParameterTypes();
+		if(paramTypes.length == 1 && paramTypes[0] == double[].class) {
+			this.argumentCount = -1;
+			return;
+		}
+		
+		for(Class<?> type:paramTypes) {
+			if(type != double.class) {
+				throw new IllegalStateException("Only methods with no arguments, one double[] argument or any count of double arguments can be registered");
+			}
+		}
+		this.argumentCount = paramTypes.length;
+	}
+	
+	public JavaFunction(Class<?> container, String methodName, int argumentCount) throws ReflectiveOperationException {
+		this(container, methodName, argumentCount, methodName);
+	}
+	
+	public JavaFunction(Class<?> container, String methodName, int argumentCount, String localName) throws ReflectiveOperationException {
 		Class<?>[] arg;
 		
 		if(argumentCount >= 0) {
@@ -36,9 +61,9 @@ public class JavaFunction implements Function, Instruction {
 			throw e;
 		}
 		
-		this.name = methodName;
+		this.name = localName;
 		this.argumentCount = argumentCount;
-		
+
 	}
 	
 	@Override
@@ -113,7 +138,7 @@ public class JavaFunction implements Function, Instruction {
 			}
 		}
 		signature.append(")D");
-		visitor.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, signature.toString(), false);
+		visitor.visitMethodInsn(Opcodes.INVOKESTATIC, owner, method.getName(), signature.toString(), false);
 	}
 
 	@Override
