@@ -33,6 +33,7 @@ System.out.println(result); // 65.0
   * currently, functions cannot be defined using the expression syntax, but only by binding java methods to the evaluator
 * There are two Evaluator Implementations, SimpleEvaluator and ASMEvaluator (see below for details)
 * Currently, two specialized Interfaces for expressions with no or a single variable are provided (see below)
+* Accessing the name of Variables required by a given Expression
 
 ## Some implementation details
 
@@ -117,7 +118,7 @@ public class JITExpression$1 implements SingleVarExpression {
 
 ```
 
-Note that the classname is "JITExpression$1" which is given by the ASMClassLoader cannot be compiled normally, but only when generating bytecode directly. Also the ASMClassLoader decided to implements SingleVarExpression instead of just Expression based on the fact theres only one variable in this expression. There will always be one method taking all variables needed by the expression as native doubles, and implementing th actual expression (fullfying SingleVarExpression for one variable or StaticExpression for no variables) and one method taking a Map<String, Double> and delegating to the other one (fullfying Expression)
+Note that the classname "JITExpression$1" is assigned by the ASMClassLoader automatically. A class with this name cannot be compiled normally, but only when generating bytecode directly. Also the ASMClassLoader decided to implement SingleVarExpression instead of just Expression based on the fact theres only one variable in this expression. There will always be one method taking all variables needed by the expression as native doubles, and implementing the actual expression (fullfying SingleVarExpression for one variable or StaticExpression for no variables) and one method taking a ```Map<String, Double>``` and delegating to the other one (fullfying Expression)
 
 #### Conclusion
 
