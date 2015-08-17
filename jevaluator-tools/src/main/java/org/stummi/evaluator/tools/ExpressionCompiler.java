@@ -24,7 +24,7 @@ public class ExpressionCompiler {
 		
 		String expression = args[0];
 		String className = args[1];
-		String fileName = args.length == 3 ? className + ".class" : args[2];
+		String fileName = args.length == 3 ? args[2] : className + ".class" ;
 		
 		Tokenizer tokenizer = new Tokenizer();
 		TokenGroup tokens = tokenizer.tokenize(expression);
