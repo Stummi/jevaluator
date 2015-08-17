@@ -13,9 +13,18 @@ import org.stummi.evaluator.instruction.InstructionList;
 
 public class ASMClassLoader extends ClassLoader implements Opcodes {
 	private AtomicInteger counter = new AtomicInteger();
-
+	
+	public ASMClassLoader() {
+		super(parent());
+	}
+	
 	public ASMClassLoader(ClassLoader parent) {
 		super(parent);
+	}
+	
+	private static ClassLoader parent() {
+		ClassLoader myLoader = ASMClassLoader.class.getClassLoader();
+		return myLoader == null ? ClassLoader.getSystemClassLoader() : myLoader;
 	}
 
 	@SuppressWarnings("unchecked")

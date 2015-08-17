@@ -9,12 +9,7 @@ public class ASMEvaluator extends SimpleEvaluator {
 	private final ASMClassLoader loader;
 
 	public ASMEvaluator() {
-		this.loader = new ASMClassLoader(parent());
-	}
-	
-	private static ClassLoader parent() {
-		ClassLoader myLoader = ASMClassLoader.class.getClassLoader();
-		return myLoader == null ? ClassLoader.getSystemClassLoader() : myLoader;
+		this.loader = new ASMClassLoader();
 	}
 
 	@Override
